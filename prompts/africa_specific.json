@@ -1,0 +1,82 @@
+{
+  "regional_tournaments": {
+    "wafu_cup": [
+      "WAFU Cup of Nations: {home} vs {away} regional derby, West African flags everywhere, intense rivalry, colorful traditional attire in stands",
+      "West African football championship: {home} players displaying skill against {away}, regional pride, stadium packed with passionate fans"
+    ],
+    "ucc": [
+      "UCC tournament: {home} representing their community against {away}, local heroes, grassroots football, authentic African atmosphere"
+    ],
+    "afcon": [
+      "AFCON qualifier: {home} vs {away} continental battle, national pride, biggest stadium in country packed"
+    ]
+  },
+  
+  "cultural_elements": {
+    "dance": [
+      "{home} fans doing traditional dance after goal against {away}, vibrant African culture, joy and celebration, colorful traditional clothing",
+      "Halftime cultural performance at {home} vs {away} match, traditional dancers, drums, spectacular show",
+      "Celebration: {home} supporters performing tribal dance in stands during {away} match, rhythmic movements"
+    ],
+    "music": [
+      "{home} supporters with drums and vuvuzelas creating wall of sound against {away}, musical atmosphere, energy and passion",
+      "African brass band playing at {home} vs {away} match, musicians in stands, vibrant colors",
+      "Fans of {home} singing traditional songs during {away} match, cultural heritage, unified voices"
+    ],
+    "food": [
+      "Street food vendors outside {stadium} before {home} vs {away}, grilled meats, fans eating and laughing, local cuisine",
+      "Tailgate party: {home} fans sharing local food and drinks before match against {away}, community bonding"
+    ]
+  },
+  
+  "landmarks": {
+    "dakar": [
+      "{home} vs {away} with Monument de la Renaissance in background, iconic Dakar landmark, sunset colors",
+      "Stade Léopold Sédar Senghor packed for {home} vs {away}, Dakar skyline visible, evening match",
+      "African Cup match at Dakar's iconic stadium: {home} vs {away}, city of Dakar in background"
+    ],
+    "bissau": [
+      "{home} vs {away} in Estádio 24 de Setembro, Bissau city atmosphere, Portuguese colonial architecture nearby",
+      "Football in Bissau: {home} playing against {away} with Bissau Velho in background, historic setting"
+    ],
+    "abidjan": [
+      "{home} vs {away} in Stade Félix Houphouët-Boigny, Abidjan skyline at night, modern Africa",
+      "Plateau district view during {home} vs {away} match, urban African football, city lights"
+    ],
+    "conakry": [
+      "{home} vs {away} match at Stade du 28 Septembre, Conakry harbor visible, Guinean football passion"
+    ],
+    "lagos": [
+      "{home} vs {away} at Teslim Balogun Stadium, Lagos island skyline, Nigerian football energy"
+    ]
+  },
+  
+  "weather_seasons": {
+    "dry": [
+      "{home} vs {away} under harmattan haze, dusty afternoon match, atmospheric conditions, unique lighting",
+      "Dry season football: {home} vs {away} in bright sunshine, clear blue sky, vibrant green pitch contrast",
+      "Hot afternoon match: {home} vs {away}, players battling heat and dust, dry season atmosphere"
+    ],
+    "rainy": [
+      "{home} vs {away} in tropical rainstorm, players sliding on wet pitch, dramatic weather, powerful imagery",
+      "Rainy season match: {home} vs {away} with dramatic clouds, lightning in distance, epic atmosphere",
+      "Monsoon football: {home} playing against {away} in heavy rain, puddle on pitch, dramatic conditions"
+    ]
+  },
+  
+  "special_events": {
+    "new_year": [
+      "New Year's football: {home} vs {away} celebration, fireworks in background, start of year festivities"
+    ],
+    "independence_guinea": [
+      "Independence Day special: {home} vs {away} match, Guinean flag everywhere, national celebration, 15 August"
+    ],
+    "independence_guinea_bissau": [
+      "Independence Day: {home} vs {away} in Bissau, Portuguese and African flags, historic celebration, 24 September"
+    ],
+    "christmas": [
+      "Christmas football: {home} vs {away} festive match, holiday atmosphere, decorations in stadium"
+    ]
+  }
+}
+
