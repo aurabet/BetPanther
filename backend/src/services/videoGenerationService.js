@@ -161,6 +161,38 @@ class VideoGenerationService {
   }
 
   /**
+   * Génère une célébration de but
+   */
+  async generateGoalCelebration(match, scorer) {
+    const prompts = [
+      `${scorer} scores for ${match.home_team} against ${match.away_team}, dramatic slow motion celebration, crowd eruption, player slides on knees, teammates pile on, cinematic sports drama`,
+      `${scorer} scores winning goal against ${match.away_team}, emotional celebration, runs to corner flag, stadium explodes, epic moment`,
+      `Hat-trick celebration by ${scorer} for ${match.home_team} against ${match.away_team}, ball boy brings ball, stadium ovation`
+    ];
+
+    const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+    const encoded = encodeURIComponent(prompt);
+    
+    return `${this.baseURL}${this.videoEndpoint}/${encoded}?width=1080&height=1920&duration=5&nologo=true`;
+  }
+
+  /**
+   * Génère une story sociale
+   */
+  async generateSocialStory(match, platform = 'instagram') {
+    const prompts = {
+      instagram: `${match.home_team} vs ${match.away_team} story highlights, vertical format, trending music, fast cuts, Instagram story style`,
+      tiktok: `${match.home_team} vs ${match.away_team} viral moment, TikTok trending sound, quick edits, dance overlay`,
+      facebook: `${match.home_team} vs ${match.away_team} Facebook story, fan reactions, reactions overlay`
+    };
+
+    const prompt = prompts[platform] || prompts.instagram;
+    const encoded = encodeURIComponent(prompt);
+    
+    return `${this.baseURL}${this.videoEndpoint}/${encoded}?width=1080&height=1920&duration=15&nologo=true`;
+  }
+
+  /**
    * Nettoie les anciennes vidéos
    */
   async cleanupOldVideos() {
