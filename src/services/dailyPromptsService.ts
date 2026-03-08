@@ -125,6 +125,59 @@ const FRENCH_DAY_NAMES: Record<string, string> = {
   sunday: 'Dimanche'
 };
 
+// Prompts additionnels pour les tournois régionaux et éléments culturels
+const SPECIAL_PROMPTS = {
+  regional_tournaments: {
+    wafu_cup: [
+      "WAFU Cup of Nations: {home} vs {away} regional derby, West African flags everywhere, intense rivalry, colorful traditional attire in stands",
+      "West African football championship: {home} players displaying skill against {away}, regional pride, stadium packed with passionate fans"
+    ],
+    ucc: [
+      "UCC tournament: {home} representing their community against {away}, local heroes, grassroots football, authentic African atmosphere"
+    ]
+  },
+  
+  cultural_elements: {
+    dance: [
+      "{home} fans doing traditional dance after goal against {away}, vibrant African culture, joy and celebration, colorful traditional clothing",
+      "Halftime cultural performance at {home} vs {away} match, traditional dancers, drums, spectacular show"
+    ],
+    music: [
+      "{home} supporters with drums and vuvuzelas creating wall of sound against {away}, musical atmosphere, energy and passion",
+      "African brass band playing at {home} vs {away} match, musicians in stands, vibrant colors"
+    ],
+    food: [
+      "Street food vendors outside {stadium} before {home} vs {away}, grilled meats, fans eating and laughing, local cuisine"
+    ]
+  },
+  
+  landmarks: {
+    dakar: [
+      "{home} vs {away} with Monument de la Renaissance in background, iconic Dakar landmark, sunset colors",
+      "Stade Léopold Sédar Senghor packed for {home} vs {away}, Dakar skyline visible, evening match"
+    ],
+    bissau: [
+      "{home} vs {away} in Estádio 24 de Setembro, Bissau city atmosphere, Portuguese colonial architecture nearby",
+      "Football in Bissau: {home} playing against {away} with Bissau Velho in background, historic setting"
+    ],
+    abidjan: [
+      "{home} vs {away} in Stade Félix Houphouët-Boigny, Abidjan skyline at night, modern Africa",
+      "Plateau district view during {home} vs {away} match, urban African football, city lights"
+    ]
+  },
+  
+  weather_seasons: {
+    dry: [
+      "{home} vs {away} under harmattan haze, dusty afternoon match, atmospheric conditions, unique lighting",
+      "Dry season football: {home} vs {away} in bright sunshine, clear blue sky, vibrant green pitch contrast"
+    ],
+    rainy: [
+      "{home} vs {away} in tropical rainstorm, players sliding on wet pitch, dramatic weather, powerful imagery",
+      "Rainy season match: {home} vs {away} with dramatic clouds, lightning in distance, epic atmosphere"
+    ]
+  }
+};
+
 class DailyPromptsService {
   private baseURL = 'https://pollinations.ai';
 
@@ -339,6 +392,68 @@ class DailyPromptsService {
     });
 
     return stats;
+  }
+
+  /**
+   * Récupère les prompts de tournoi régional
+   * @param tournament - Type de tournoi (wafu_cup, ucc)
+   */
+  getRegionalTournamentPrompts(tournament: string): string[] | null {
+    if (!SPECIAL_PROMPTS.regional_tournaments[tournament as keyof typeof SPECIAL_PROMPTS.regional_tournaments]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.regional_tournaments[tournament as keyof typeof SPECIAL_PROMPTS.regional_tournaments];
+  }
+
+  /**
+   * Récupère les prompts culturels
+   * @param type - Type culturel (dance, music, food)
+   */
+  getCulturalPrompts(type: string): string[] | null {
+    if (!SPECIAL_PROMPTS.cultural_elements[type as keyof typeof SPECIAL_PROMPTS.cultural_elements]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.cultural_elements[type as keyof typeof SPECIAL_PROMPTS.cultural_elements];
+  }
+
+  /**
+   * Récupère les prompts de landmarks
+   * @param city - Ville (dakar, bissau, abidjan)
+   */
+  getLandmarkPrompts(city: string): string[] | null {
+    if (!SPECIAL_PROMPTS.landmarks[city as keyof typeof SPECIAL_PROMPTS.landmarks]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.landmarks[city as keyof typeof SPECIAL_PROMPTS.landmarks];
+  }
+
+  /**
+   * Récupère les prompts météo/saison
+   * @param season - Saison (dry, rainy)
+   */
+  getWeatherPrompts(season: string): string[] | null {
+    if (!SPECIAL_PROMPTS.weather_seasons[season as keyof typeof SPECIAL_PROMPTS.weather_seasons]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.weather_seasons[season as keyof typeof SPECIAL_PROMPTS.weather_seasons];
+  }
+
+  /**
+   * Génère une URL d'image avec un prompt spécial
+   */
+  generateSpecialImageUrl(match: MatchData, prompt: string): string {
+    const formattedPrompt = this.formatPrompt(prompt, {
+      home: match.home_team,
+      away: match.away_team,
+      stadium: match.stadium || 'African Stadium'
+    });
+
+    const encodedPrompt = encodeURIComponent(formattedPrompt);
+    const width = 1024;
+    const height = 768;
+    const seed = match.id + prompt.length;
+
+    return `${this.baseURL}/p/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
   }
 }
 

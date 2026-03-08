@@ -96,6 +96,59 @@ const DAILY_PROMPTS = {
   }
 };
 
+// Prompts additionnels pour les tournois régionaux et éléments culturels
+const SPECIAL_PROMPTS = {
+  regional_tournaments: {
+    wafu_cup: [
+      "WAFU Cup of Nations: {home} vs {away} regional derby, West African flags everywhere, intense rivalry, colorful traditional attire in stands",
+      "West African football championship: {home} players displaying skill against {away}, regional pride, stadium packed with passionate fans"
+    ],
+    ucc: [
+      "UCC tournament: {home} representing their community against {away}, local heroes, grassroots football, authentic African atmosphere"
+    ]
+  },
+  
+  cultural_elements: {
+    dance: [
+      "{home} fans doing traditional dance after goal against {away}, vibrant African culture, joy and celebration, colorful traditional clothing",
+      "Halftime cultural performance at {home} vs {away} match, traditional dancers, drums, spectacular show"
+    ],
+    music: [
+      "{home} supporters with drums and vuvuzelas creating wall of sound against {away}, musical atmosphere, energy and passion",
+      "African brass band playing at {home} vs {away} match, musicians in stands, vibrant colors"
+    ],
+    food: [
+      "Street food vendors outside {stadium} before {home} vs {away}, grilled meats, fans eating and laughing, local cuisine"
+    ]
+  },
+  
+  landmarks: {
+    dakar: [
+      "{home} vs {away} with Monument de la Renaissance in background, iconic Dakar landmark, sunset colors",
+      "Stade Léopold Sédar Senghor packed for {home} vs {away}, Dakar skyline visible, evening match"
+    ],
+    bissau: [
+      "{home} vs {away} in Estádio 24 de Setembro, Bissau city atmosphere, Portuguese colonial architecture nearby",
+      "Football in Bissau: {home} playing against {away} with Bissau Velho in background, historic setting"
+    ],
+    abidjan: [
+      "{home} vs {away} in Stade Félix Houphouët-Boigny, Abidjan skyline at night, modern Africa",
+      "Plateau district view during {home} vs {away} match, urban African football, city lights"
+    ]
+  },
+  
+  weather_seasons: {
+    dry: [
+      "{home} vs {away} under harmattan haze, dusty afternoon match, atmospheric conditions, unique lighting",
+      "Dry season football: {home} vs {away} in bright sunshine, clear blue sky, vibrant green pitch contrast"
+    ],
+    rainy: [
+      "{home} vs {away} in tropical rainstorm, players sliding on wet pitch, dramatic weather, powerful imagery",
+      "Rainy season match: {home} vs {away} with dramatic clouds, lightning in distance, epic atmosphere"
+    ]
+  }
+};
+
 class DailyImagePrompts {
   /**
    * Récupère le thème et les prompts pour le jour actuel
@@ -280,6 +333,64 @@ class DailyImagePrompts {
     stats.totalPrompts = stats.totalMatchPrompts + stats.totalSocialPrompts;
 
     return stats;
+  }
+
+  /**
+   * Récupère les prompts spéciaux pour les tournois régionaux
+   * @param {string} tournament - Type de tournoi (wafu_cup, ucc)
+   * @returns {Array|null} Tableau de prompts ou null
+   */
+  getRegionalTournamentPrompts(tournament) {
+    if (!SPECIAL_PROMPTS.regional_tournaments[tournament]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.regional_tournaments[tournament];
+  }
+
+  /**
+   * Récupère les prompts culturels
+   * @param {string} type - Type culturel (dance, music, food)
+   * @returns {Array|null} Tableau de prompts ou null
+   */
+  getCulturalPrompts(type) {
+    if (!SPECIAL_PROMPTS.cultural_elements[type]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.cultural_elements[type];
+  }
+
+  /**
+   * Récupère les prompts de landmarks
+   * @param {string} city - Ville (dakar, bissau, abidjan)
+   * @returns {Array|null} Tableau de prompts ou null
+   */
+  getLandmarkPrompts(city) {
+    if (!SPECIAL_PROMPTS.landmarks[city]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.landmarks[city];
+  }
+
+  /**
+   * Récupère les prompts météo/saison
+   * @param {string} season - Saison (dry, rainy)
+   * @returns {Array|null} Tableau de prompts ou null
+   */
+  getWeatherPrompts(season) {
+    if (!SPECIAL_PROMPTS.weather_seasons[season]) {
+      return null;
+    }
+    return SPECIAL_PROMPTS.weather_seasons[season];
+  }
+
+  /**
+   * Formate un prompt spécial avec les données du match
+   * @param {string} prompt - Prompt à formater
+   * @param {Object} matchData - Données du match
+   * @returns {string} Prompt formaté
+   */
+  formatSpecialPrompt(prompt, matchData) {
+    return this.formatPrompt(prompt, matchData);
   }
 }
 
