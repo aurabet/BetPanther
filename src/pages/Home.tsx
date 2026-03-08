@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import Header from '../components/Header';
 import MatchCard from '../components/MatchCard';
+import DailyThemeBanner from '../components/DailyThemeBanner';
+import DailyMatchCard from '../components/DailyMatchCard';
 
 interface Match {
   id: number;
@@ -64,6 +66,9 @@ export default function Home() {
     <div>
       <Header />
       <main className="container mx-auto p-4">
+        {/* Banner avec le thème du jour */}
+        <DailyThemeBanner variant="compact" showMatchPrompts={false} />
+        
         <h1 className="text-2xl text-white font-bold mb-6">
           Matchs du jour
         </h1>

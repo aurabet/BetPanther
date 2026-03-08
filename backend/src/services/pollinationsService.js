@@ -2,6 +2,7 @@ const axios = require('axios');
 const supabase = require('../config/supabase');
 const redis = require('./redisService');
 const logger = require('../utils/logger');
+const dailyPrompts = require('./dailyImagePrompts');
 
 class PollinationsService {
     constructor() {
@@ -134,6 +135,143 @@ class PollinationsService {
             url: `https://ui-avatars.com/api/?name=${match.home_team}+${match.away_team}&background=22c55e&color=fff&size=512`,
             fallback: true
         };
+    }
+
+    /**
+     * Génère une image avec le prompt du jour (utilise dailyImagePrompts)
+     * @param {Object} match - Données du match
+     * @param {string} type - Type de prompt ('match' ou 'social')
+     * @returns {Object} URL de l'image générée
+     */
+    async generateDailyMatchImage(match, type = 'match') {
+        const cacheKey = `daily_pollinations:${match.id}:${type}`;
+        
+        // Vérifier le cache
+        const cached = await redis.get(cacheKey);
+        if (cached) return JSON.parse(cached);
+
+        // Obtenir les prompts du jour actuel
+        const dailyData = dailyPrompts.getCurrentDayPrompts();
+        const prompt = dailyPrompts.generateMatchPrompt(dailyData.day, type, {
+            home: match.home_team,
+            away: match.away_team,
+            stadium: match.stadium || 'African Stadium'
+        });
+
+        try {
+            const encodedPrompt = encodeURIComponent(prompt);
+            const width = 1024;
+            const height = 768;
+            const seed = match.id + dailyData.day.length; // Variation par jour
+            
+            const imageUrl = `${this.baseURL}/p/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+            
+            // Sauvegarder dans Supabase
+            const { data, error } = await supabase
+                .from('match_images')
+                .insert({
+                    match_id: match.id,
+                    image_url: imageUrl,
+                    prompt: prompt,
+                    model: 'pollinations_daily',
+                    created_at: new Date()
+                })
+                .select();
+
+            if (error) throw error;
+
+            // Mettre en cache (1 jour pour les prompts quotidiens)
+            await redis.set(cacheKey, JSON.stringify({
+                url: imageUrl,
+                id: data[0].id,
+                theme: dailyData.theme,
+                day: dailyData.day
+            }), 'EX', 86400);
+
+            return { 
+                url: imageUrl, 
+                id: data[0].id,
+                theme: dailyData.theme,
+                day: dailyData.day
+            };
+
+        } catch (error) {
+            logger.error('Erreur Pollinations Daily:', error);
+            return this.getFallbackImage(match);
+        }
+    }
+
+    /**
+     * Génère une image pour un jour spécifique de la semaine
+     * @param {Object} match - Données du match
+     * @param {string} day - Jour de la semaine (monday, tuesday, etc.)
+     * @param {string} type - Type de prompt ('match' ou 'social')
+     * @returns {Object} URL de l'image générée
+     */
+    async generateMatchImageForDay(match, day, type = 'match') {
+        const cacheKey = `day_pollinations:${match.id}:${day}:${type}`;
+        
+        const cached = await redis.get(cacheKey);
+        if (cached) return JSON.parse(cached);
+
+        const dayData = dailyPrompts.getDayPrompts(day);
+        if (!dayData) {
+            return this.getFallbackImage(match);
+        }
+
+        const prompt = dailyPrompts.generateMatchPrompt(day, type, {
+            home: match.home_team,
+            away: match.away_team,
+            stadium: match.stadium || 'African Stadium'
+        });
+
+        try {
+            const encodedPrompt = encodeURIComponent(prompt);
+            const width = 1024;
+            const height = 768;
+            const seed = match.id + day.length;
+            
+            const imageUrl = `${this.baseURL}/p/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+            
+            const { data, error } = await supabase
+                .from('match_images')
+                .insert({
+                    match_id: match.id,
+                    image_url: imageUrl,
+                    prompt: prompt,
+                    model: 'pollinations_day',
+                    created_at: new Date()
+                })
+                .select();
+
+            if (error) throw error;
+
+            await redis.set(cacheKey, JSON.stringify({
+                url: imageUrl,
+                id: data[0].id,
+                theme: dayData.theme,
+                day: day
+            }), 'EX', 86400);
+
+            return { 
+                url: imageUrl, 
+                id: data[0].id,
+                theme: dayData.theme,
+                day: day
+            };
+
+        } catch (error) {
+            logger.error('Erreur Pollinations Day:', error);
+            return this.getFallbackImage(match);
+        }
+    }
+
+    /**
+     * Obtient les informations du jour actuel
+     * @returns {Object} Données du jour actuel
+     */
+    getCurrentDayInfo() {
+        return dailyPrompts.getCurrentDayPrompts();
     }
 }
 
