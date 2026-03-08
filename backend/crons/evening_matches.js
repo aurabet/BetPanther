@@ -1,3 +1,26 @@
+Exemples de Prompts Générés
+Match du matin (Lundi 8h) :
+text
+Monday morning football freshness: Sporting Bissau vs Benfica Bissau, new week energy, morning sunlight streaming into stadium, players warming up with focus, professional sports photography, f/2.8, canon r5, National geographic style, African football atmosphere
+Match en soirée (Samedi 20h) :
+text
+Saturday night lights: Horoya vs Djoliba, full stadium explosion, floodlights creating dramatic shadows, confetti and smoke, fans with traditional drums, vibrant African celebration, sports illustrated cover style, 8k resolution, cinematic composition
+Promotion spéciale (Vendredi) :
+text
+Friday feeling: Golden welcome bonus 100%, African football fans celebrating, treasure chest overflowing with coins and footballs, 3d render, luxurious atmosphere, vibrant colors, trending on behance
+Réseaux sociaux (Mercredi) :
+text
+Hump day celebration: ASEC Mimosas fans dancing after victory, joyful African supporters, colorful traditional attire, Instagram story style, vertical format, bright and shareable content
+📈 Planning de Génération Hebdomadaire
+Jour	Matchs	Promos	Social	Total Images
+Lundi	10 × 3 = 30	5	3	38
+Mardi	8 × 3 = 24	5	3	32
+Mercredi	12 × 3 = 36	5	3	44
+Jeudi	10 × 3 = 30	5	3	38
+Vendredi	15 × 3 = 45	10	5	60
+Samedi	20 × 3 = 60	10	5	75
+Dimanche	15 × 3 = 45	5	3	53
+Semaine	270	45	25	340
 /**
  * Cron: Génération des images pour les matchs du soir
  * Exécuté à 18h00 chaque jour
