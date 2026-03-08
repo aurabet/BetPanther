@@ -1,286 +1,179 @@
+/**
+ * Service de génération de vidéos IA pour les bandes-annonces de matchs
+ * Utilise Pollinations.ai pour les vidéos
+ */
+
 const axios = require('axios');
-const supabase = require('../config/supabase');
+const { Pool } = require('pg');
 const redis = require('./redisService');
 const logger = require('../utils/logger');
 
 class VideoGenerationService {
-    constructor() {
-        this.baseURL = 'https://pollinations.ai';
-        this.videoEndpoint = '/wan2.6';
-        
-        // Templates de prompts vidéo par type
-        this.templates = {
-            match_trailer: this.loadMatchTemplates(),
-            goal_celebration: this.loadGoalTemplates(),
-            promotion: this.loadPromoTemplates(),
-            social_story: this.loadSocialTemplates()
-        };
+  constructor() {
+    this.baseURL = 'https://pollinations.ai';
+    this.videoEndpoint = '/video';
+    this.pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  }
+
+  /**
+   * Génère une bande-annonce vidéo pour un match
+   * @param {Object} match - Données du match
+   * @returns {Object} URL de la vidéo générée
+   */
+  async generateMatchTrailer(match) {
+    const cacheKey = `video_trailer:${match.id}`;
+    
+    // Vérifier le cache
+    const cached = await redis.get(cacheKey);
+    if (cached) return JSON.parse(cached);
+
+    // Construire le prompt vidéo
+    const prompt = this.buildVideoPrompt(match);
+    
+    try {
+      // Générer la vidéo via Pollinations
+      const videoUrl = await this.createVideo(prompt, match);
+      
+      // Sauvegarder en base
+      const { data, error } = await this.pool.query(`
+        INSERT INTO match_videos (match_id, video_url, prompt, created_at)
+        VALUES ($1, $2, $3, NOW())
+        RETURNING id
+      `, [match.id, videoUrl, prompt]);
+
+      if (error) throw error;
+
+      // Mettre en cache (24 heures pour les vidéos)
+      await redis.set(cacheKey, JSON.stringify({
+        url: videoUrl,
+        id: data[0].id,
+        matchId: match.id
+      }), 'EX', 86400);
+
+      return { url: videoUrl, id: data[0].id };
+
+    } catch (error) {
+      logger.error('Erreur génération vidéo:', error);
+      return this.getFallbackVideo(match);
     }
+  }
 
-    /**
-     * Templates pour bandes-annonces de matchs
-     */
-    loadMatchTemplates() {
-        return {
-            epic: [
-                "Epic football match trailer, {home} vs {away} at {stadium}, dramatic slow motion, players walking onto pitch, stadium wide shot, cinematic lighting, 4k quality, movie trailer style",
-                
-                "Intense football showdown preview, {home} and {away} teams facing off, close up on determined players, crowd roaring, dramatic music visual, cinematic color grading",
-                
-                "Championship match anticipation, {home} vs {away}, sweeping stadium shots, fans waving flags, players warming up, golden hour lighting, epic scale"
-            ],
-            
-            african: [
-                "Vibrant African football atmosphere, {home} vs {away} match, traditional drummers in stands, colorful clothing, dancing fans, smoke flares, celebration energy, dynamic camera movement",
-                
-                "African football derby opening scene, {home} fans with vuvuzelas, {away} supporters with flags, stadium electric atmosphere, cultural dance, vibrant colors, documentary style",
-                
-                "Football in Africa: {home} vs {away}, drone shot over stadium, fans arriving, local food vendors, match day energy, authentic atmosphere, warm colors"
-            ],
-            
-            dramatic: [
-                "Dramatic football match trailer, storm clouds over {stadium}, players determined faces, slow motion rain, intense close-ups, dark and moody cinematography, 8k",
-                
-                "Last minute decider buildup, {home} vs {away}, tension in the air, clock ticking visual, players preparing for final moments, cinematic thriller style"
-            ]
-        };
+  /**
+   * Construit un prompt optimisé pour les bandes-annonces vidéo
+   */
+  buildVideoPrompt(match) {
+    const homeTeam = match.home_team;
+    const awayTeam = match.away_team;
+    
+    // Prompts variés pour éviter la monotonie
+    const prompts = [
+      `Cinematic trailer of ${homeTeam} vs ${awayTeam} football match, dramatic stadium atmosphere, crowd cheering, players running, goal celebration, professional sports cinematography, smooth camera movements, 8k`,
+      
+      `Epic football match preview: ${homeTeam} against ${awayTeam}, intense gameplay, stadium lights, fans with flags, African football energy, cinematic opening sequence, dramatic slow motion highlights`,
+      
+      `Action-packed football derby: ${homeTeam} vs ${awayTeam}, dramatic lighting, crowd explosions, player skills, spectacular goals, movie trailer style, epic music vibe`
+    ];
+    
+    // Sélectionner un prompt basé sur l'ID du match pour la cohérence
+    const promptIndex = (match.id % prompts.length);
+    return prompts[promptIndex];
+  }
+
+  /**
+   * Crée une vidéo via Pollinations.ai
+   */
+  async createVideo(prompt, match) {
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    // Paramètres vidéo Pollinations
+    const width = 1280;
+    const height = 720;
+    const seed = match.id;
+    const duration = 5; // 5 secondes par défaut
+    
+    // URL de génération vidéo
+    const videoUrl = `${this.baseURL}${this.videoEndpoint}/${encodedPrompt}?width=${width}&height=${height}&seed=${seed}&duration=${duration}&nologo=true`;
+    
+    return videoUrl;
+  }
+
+  /**
+   * Récupère une vidéo existante pour un match
+   */
+  async getMatchTrailer(matchId) {
+    try {
+      const result = await this.pool.query(`
+        SELECT * FROM match_videos 
+        WHERE match_id = $1 
+        ORDER BY created_at DESC 
+        LIMIT 1
+      `, [matchId]);
+
+      if (result.rows.length > 0) {
+        return result.rows[0];
+      }
+      
+      return null;
+    } catch (error) {
+      logger.error('Erreur récupération vidéo:', error);
+      return null;
     }
+  }
 
-    /**
-     * Templates pour célébrations de buts
-     */
-    loadGoalTemplates() {
-        return [
-            "Spectacular goal celebration, {home} player scores against {away}, crowd erupts, player slides on knees, teammates pile on, slow motion joy, stadium explosion",
-            
-            "Winning goal moment, {home} striker celebrates hat-trick against {away}, fans in disbelief, pure emotion, cinematic slow motion, confetti falling",
-            
-            "Last minute equalizer celebration, {home} fans going wild, player runs to corner flag, dramatic reaction shots, stadium shaking, emotional moment"
-        ];
-    }
+  /**
+   * Génère une vidéo promotionnelle
+   */
+  async generatePromoVideo(promo) {
+    const prompts = {
+      'welcome_bonus': `Cinematic 3D animation of welcome bonus celebration, golden coins falling, football stadium background, luxury atmosphere, professional advertising, 8k`,
+      
+      'free_bet': `Exciting free bet reveal, magical football appearing, sparkles and lights, African stadium backdrop, promotional trailer style`,
+      
+      'jackpot': `Epic jackpot celebration, confetti explosion, gold and green colors, football players cheering, dramatic sports moment`
+    };
 
-    /**
-     * Templates pour promotions
-     */
-    loadPromoTemplates() {
-        return {
-            welcome_bonus: [
-                "Animated 3d golden welcome bonus 100% rotating, footballs and coins falling, luxurious background, sleek motion graphics, professional advertisement, 4k"
-            ],
-            free_bet: [
-                "Golden free bet ticket floating in magical space, sparkling particles, rotating 3d text 'FREE BET', premium feel, cinematic lighting, smooth animation"
-            ],
-            cashback: [
-                "Golden shield protecting falling coins, cashback 10% text glowing, rotating camera view, luxurious metallic textures, professional 3d animation"
-            ]
-        };
-    }
+    const prompt = prompts[promo.type] || prompts.welcome_bonus;
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    return `${this.baseURL}${this.videoEndpoint}/${encodedPrompt}?width=1080&height=1920&duration=10&nologo=true`;
+  }
 
-    /**
-     * Templates pour stories sociales
-     */
-    loadSocialTemplates() {
-        return {
-            instagram: [
-                "Vertical instagram story video, {home} vs {away} match highlights, fast paced edits, trendy transitions, vibrant colors, music visual effect, viral style",
-                
-                "TikTok style video, {home} fans dancing to celebrate win, popular dance moves, engaging content, bright colors, shareable format"
-            ],
-            
-            tiktok: [
-                "TikTok trend video, football celebration challenge, {home} players dancing in locker room, fun atmosphere, engaging content, viral potential"
-            ]
-        };
-    }
+  /**
+   * Génère une compilation de meilleurs moments
+   */
+  async generateHighlightsVideo(matches, title = "Weekly Highlights") {
+    const prompt = `Exciting football highlights compilation, ${title}, dramatic moments, goals, celebrations, African football, professional sports editing, cinematic transitions`;
+    
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    return `${this.baseURL}${this.videoEndpoint}/${encodedPrompt}?width=1920&height=1080&duration=30&nologo=true`;
+  }
 
-    /**
-     * Génère une vidéo avec Wan 2.6
-     * Format: https://pollinations.ai/wan2.6/{prompt}
-     */
-    async generateVideo(prompt, options = {}) {
-        try {
-            const encodedPrompt = encodeURIComponent(prompt);
-            let url = `${this.baseURL}${this.videoEndpoint}/${encodedPrompt}`;
-            
-            // Ajouter des paramètres optionnels
-            if (options.duration) {
-                url += `?duration=${options.duration}`;
-            }
-            if (options.seed) {
-                url += `${options.duration ? '&' : '?'}seed=${options.seed}`;
-            }
-            
-            // Pour l'instant, Wan 2.6 retourne directement la vidéo
-            // Dans une version future, on pourrait avoir besoin de polling
-            return url;
-            
-        } catch (error) {
-            logger.error('Erreur génération vidéo:', error);
-            return null;
-        }
-    }
+  /**
+   * Vidéo de secours
+   */
+  getFallbackVideo(match) {
+    return {
+      url: null,
+      fallback: true,
+      message: 'Vidéo non disponible'
+    };
+  }
 
-    /**
-     * Génère une bande-annonce pour un match
-     */
-    async generateMatchTrailer(match) {
-        const cacheKey = `video_trailer:${match.id}`;
-        
-        // Vérifier si déjà généré
-        const cached = await redis.get(cacheKey);
-        if (cached) return JSON.parse(cached);
-
-        // Sélectionner le style selon l'heure du match
-        const matchHour = new Date(match.start_time).getHours();
-        let style = 'epic';
-        
-        if (matchHour >= 18) {
-            style = 'dramatic'; // Soir = dramatique
-        } else if (matchHour >= 12) {
-            style = 'african'; // Après-midi = ambiance africaine
-        }
-
-        // Sélectionner un template aléatoire
-        const templates = this.templates.match_trailer[style];
-        const template = templates[Math.floor(Math.random() * templates.length)];
-
-        // Remplacer les variables
-        const prompt = this.fillTemplate(template, {
-            home: match.home_team,
-            away: match.away_team,
-            stadium: this.getStadiumName(match),
-            league: match.league || 'Championnat Africain',
-            country: this.getCountry(match)
-        });
-
-        // Générer la vidéo
-        const videoUrl = await this.generateVideo(prompt, {
-            seed: match.id,
-            duration: '4s' // Durée actuelle de Wan 2.6
-        });
-
-        if (!videoUrl) return null;
-
-        // Sauvegarder en base
-        const { data, error } = await supabase
-            .from('match_videos')
-            .insert({
-                match_id: match.id,
-                video_url: videoUrl,
-                prompt: prompt,
-                type: 'trailer',
-                duration: 4,
-                created_at: new Date()
-            })
-            .select();
-
-        if (error) {
-            logger.error('Erreur sauvegarde vidéo:', error);
-            return null;
-        }
-
-        // Mettre en cache
-        await redis.set(cacheKey, JSON.stringify({
-            url: videoUrl,
-            id: data[0].id
-        }), 'EX', 86400); // 24h
-
-        return { url: videoUrl, id: data[0].id };
-    }
-
-    /**
-     * Génère une célébration de but
-     */
-    async generateGoalCelebration(match, scorer) {
-        const templates = this.templates.goal_celebration;
-        const template = templates[Math.floor(Math.random() * templates.length)];
-
-        const prompt = this.fillTemplate(template, {
-            home: match.home_team,
-            away: match.away_team,
-            scorer: scorer || match.home_team + ' player',
-            stadium: this.getStadiumName(match)
-        });
-
-        const videoUrl = await this.generateVideo(prompt, {
-            seed: match.id * 100 + Date.now()
-        });
-
-        return videoUrl;
-    }
-
-    /**
-     * Génère une vidéo promotionnelle
-     */
-    async generatePromoVideo(promo) {
-        const templates = this.templates.promotion[promo.type] || 
-                         this.templates.promotion.welcome_bonus;
-        
-        const template = templates[Math.floor(Math.random() * templates.length)];
-        
-        const prompt = this.fillTemplate(template, {
-            bonus: promo.value || '100%',
-            text: promo.title || 'Special Offer'
-        });
-
-        const videoUrl = await this.generateVideo(prompt, {
-            seed: promo.id
-        });
-
-        return videoUrl;
-    }
-
-    /**
-     * Génère une story Instagram/TikTok
-     */
-    async generateSocialStory(match, platform = 'instagram') {
-        const templates = this.templates.social_story[platform];
-        const template = templates[Math.floor(Math.random() * templates.length)];
-
-        const prompt = this.fillTemplate(template, {
-            home: match.home_team,
-            away: match.away_team,
-            platform: platform
-        });
-
-        // Format vertical pour stories
-        const videoUrl = await this.generateVideo(prompt, {
-            seed: match.id,
-            aspect: '9:16' // Si supporté plus tard
-        });
-
-        return videoUrl;
-    }
-
-    /**
-     * Remplit un template avec les variables
-     */
-    fillTemplate(template, variables) {
-        return template.replace(/{(\w+)}/g, (match, key) => {
-            return variables[key] || match;
-        });
-    }
-
-    /**
-     * Nom du stade
-     */
-    getStadiumName(match) {
-        const stadiums = {
-            'Guinée-Bissau': 'Estádio 24 de Setembro',
-            'Sénégal': 'Stade Abdoulaye Wade',
-            'Mali': 'Stade du 26 Mars',
-            'Côte d\'Ivoire': 'Stade Félix Houphouët-Boigny'
-        };
-        return stadiums[match.country] || 'National Stadium';
-    }
-
-    /**
-     * Pays à partir de l'équipe
-     */
-    getCountry(match) {
-        // Logique simplifiée - à adapter
-        return 'Guinée-Bissau';
-    }
+  /**
+   * Nettoie les anciennes vidéos
+   */
+  async cleanupOldVideos() {
+    const result = await this.pool.query(`
+      DELETE FROM match_videos 
+      WHERE created_at < NOW() - INTERVAL '30 days'
+      RETURNING id
+    `);
+    
+    logger.info(`${result.rowCount} anciennes vidéos supprimées`);
+    return result.rowCount;
+  }
 }
 
 module.exports = new VideoGenerationService();
+
