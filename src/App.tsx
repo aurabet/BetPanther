@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import Live from './pages/Live';
+import AIChat from './components/AIChat';
 import './App.css';
 
 function App() {
@@ -15,6 +16,11 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/live" element={<Live />} />
         </Routes>
+        
+        {/* Chat IA en bas à droite de toutes les pages */}
+        <div className="fixed bottom-6 right-6 z-50">
+          <AIChat />
+        </div>
       </div>
     </Router>
   );
