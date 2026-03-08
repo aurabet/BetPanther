@@ -114,6 +114,10 @@ pip install tensorflow torch torchvision
 pip install xgboost lightgbm catboost
 pip install statsmodels prophet
 
+# Install advanced AI capabilities
+print_status "Installing advanced AI capabilities..."
+pip install -U pollinations.ai
+
 # Install web framework and API dependencies
 print_status "Installing web framework and API dependencies..."
 pip install fastapi uvicorn
