@@ -1,0 +1,122 @@
+{
+  "daily_videos": {
+    "monday": {
+      "trailer": [
+        "Monday night football cinematic trailer, {home} vs {away}, fresh week new challenges, players determined faces, morning light, professional sports cinematography, 4k",
+        "Start of week showdown, {home} vs {away}, energetic opening sequence, stadium wide shots, motivational atmosphere, cinematic"
+      ],
+      "social": [
+        "Monday motivation video, football highlights {home} vs {away}, inspirational quotes overlay, fast paced edits, vertical format"
+      ]
+    },
+    "tuesday": {
+      "trailer": [
+        "Tuesday night under lights, {home} vs {away}, stadium floodlights creating dramatic shadows, intense build-up, slow motion player entrances, cinematic"
+      ],
+      "social": [
+        "Tuesday skills showcase, {home} best moments against {away}, technical highlights, smooth transitions, trending music visual"
+      ]
+    },
+    "wednesday": {
+      "trailer": [
+        "Wednesday decisive match trailer, {home} vs {away}, mid-week battle, dramatic clouds, intense player close-ups, epic music visual, 4k"
+      ],
+      "social": [
+        "Hump day celebration video, {home} fans dancing, fun atmosphere, viral style content, bright colors"
+      ]
+    },
+    "thursday": {
+      "trailer": [
+        "Thursday night football fever, {home} vs {away}, anticipation building, stadium timelapse, players preparing, cinematic build-up"
+      ],
+      "social": [
+        "Throwback Thursday video, classic {home} vs {away} moments, vintage filter effects, nostalgic feel"
+      ]
+    },
+    "friday": {
+      "trailer": [
+        "Friday night lights spectacular, {home} vs {away}, opening ceremony fireworks, stadium explosion, party atmosphere, cinematic wide shots"
+      ],
+      "social": [
+        "Friday feeling video, {home} supporters celebrating, weekend anticipation, energetic dance moves, shareable"
+      ]
+    },
+    "saturday": {
+      "trailer": [
+        "Saturday football madness, {home} vs {away}, full stadium eruption, dramatic slow motion, player introductions, epic scale, 8k"
+      ],
+      "social": [
+        "Matchday Saturday live vibe, {home} vs {away} atmosphere, stadium energy, fan reactions, vertical format"
+      ]
+    },
+    "sunday": {
+      "trailer": [
+        "Sunday showdown finale, {home} vs {away}, deciding match intensity, dramatic sunset lighting, emotional players, cinematic closing sequence"
+      ],
+      "social": [
+        "Sunday reflection video, best moments of the week, {home} highlights, montage style, relaxing vibe"
+      ]
+    }
+  },
+
+  "special_events": {
+    "goal_celebrations": [
+      "{home} player scores winning goal against {away}, dramatic slow motion celebration, crowd eruption, player slides on knees, teammates pile on, cinematic",
+      "Last minute equalizer celebration, {home} fans going wild, player runs to corner flag, emotional reactions, slow motion joy",
+      "Hat-trick hero celebration, {home} striker celebrates third goal against {away}, ball boy brings ball, stadium ovation, epic moment"
+    ],
+    
+    "derby_days": [
+      "Intense derby atmosphere, {home} vs {away} local rivals, tension in stadium, flares and smoke, passionate fans, cinematic documentary style",
+      "Derby day buildup, {home} fans march to stadium against {away}, police escort, drums and chanting, authentic atmosphere"
+    ],
+    
+    "championship_deciders": [
+      "Championship deciding moment, {home} vs {away}, title on the line, dramatic final minutes, players giving everything, epic sports drama",
+      "Trophy presentation anticipation, {home} players waiting for final whistle against {away}, emotional close-ups, cinematic"
+    ]
+  },
+
+  "promotional_videos": {
+    "welcome_bonus": [
+      "3d animated golden welcome bonus 100%, football stadium background, coins raining, luxurious particles, smooth camera rotation, professional advertisement"
+    ],
+    "free_bet": [
+      "Animated free bet ticket floating in magical stadium, sparkling golden text, epic reveal, cinematic lighting"
+    ],
+    "cashback": [
+      "Golden shield animation protecting coins, cashback 10% glowing text, rotating camera, premium 3d motion graphics"
+    ],
+    "referral": [
+      "Invite friends animation, two fans celebrating together, sharing joy, connected phones animation, vibrant colors"
+    ]
+  },
+
+  "seasonal": {
+    "ramadan": [
+      "Ramadan Mubarak football celebration, {home} vs {away} players breaking fast together, crescent moon over stadium, spiritual atmosphere"
+    ],
+    "eid": [
+      "Eid celebration video, {home} players in traditional attire, festive atmosphere, fireworks over stadium"
+    ],
+    "independence": [
+      "Independence day celebration, {home} vs {away} with national flags, patriotic fans, fireworks, national colors everywhere"
+    ],
+    "new_year": [
+      "New Year countdown at stadium, {home} vs {away} midnight match, fireworks spectacular, celebration atmosphere"
+    ]
+  },
+
+  "african_specific": {
+    "atmosphere": [
+      "Vibrant African football atmosphere, {home} vs {away}, traditional drummers in stands, colorful clothing, dancing fans, smoke flares, dynamic camera movement"
+    ],
+    "celebrations": [
+      "African goal celebration style, {home} players dancing after scoring against {away}, traditional moves, joyful atmosphere, vibrant colors"
+    ],
+    "fans": [
+      "Passionate African football fans, {home} supporters with painted faces, waving flags, singing and dancing, documentary style"
+    ]
+  }
+}
+
