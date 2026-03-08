@@ -1,188 +1,149 @@
-# Olimpbet Clone - Руководство по развертыванию
+# Sports Betting Platform
 
-Современная платформа для ставок на спорт, созданная на React с использованием TypeScript, Tailwind CSS и Supabase.
+A comprehensive sports betting platform with React frontend, Node.js backend, and React Native mobile app.
 
-## 🚀 Быстрый старт
+## 🚀 Live Demo
 
-### Предварительные требования
+**Web Application**: https://bookmaker-africa-4bfd93kue-aurabet-6057s-projects.vercel.app
 
-Перед запуском проекта убедитесь, что у вас установлено:
+## 📦 Project Structure
 
-- **Node.js** (версия 18 или выше)
-- **npm** (поставляется с Node.js)
-- **Git** (для клонирования репозитория)
+```
+bookmaker-africa/
+├── backend/           # Node.js API server
+├── src/              # Web frontend (React)
+├── mobile-app/       # React Native mobile app
+├── database/         # Database schema and migrations
+└── README.md         # This file
+```
 
-### Установка
+## 🛠️ Local Development
 
-1. **Клонирование репозитория**
-   ```bash
-   git clone <ваш-url-репозитория>
-   cd olimpbet-clone2
-   ```
-
-2. **Установка зависимостей**
-   ```bash
-   npm install
-   ```
-
-3. **Настройка окружения**
-   
-   Создайте файл `.env.local` в корневой директории и добавьте переменные окружения:
-   ```env
-   REACT_APP_SUPABASE_URL=ваш_url_проекта_supabase
-   REACT_APP_SUPABASE_ANON_KEY=ваш_анонимный_ключ_supabase
-   CI=false
-   ```
-   
-   > **Примечание**: Замените значения-заглушки на ваши реальные учетные данные Supabase.
-
-4. **Запуск сервера разработки**
-   ```bash
-   npm start
-   ```
-   
-   Приложение будет доступно по адресу `http://localhost:3000`
-
-## 🏗️ Сборка для продакшена
-
-Для создания продакшен-сборки:
-
+### Backend (Node.js API)
 ```bash
-npm run build
+cd backend
+npm install
+npm run dev
 ```
 
-Это создаст папку `build` с оптимизированными файлами для продакшена.
-
-## 🌐 Варианты хостинга
-
-### Вариант 1: Netlify (Рекомендуется)
-
-**Автоматическое развертывание:**
-1. Загрузите ваш код в Git-репозиторий (GitHub, GitLab и т.д.)
-2. Подключите ваш репозиторий к Netlify
-3. Netlify автоматически определит настройки сборки из `netlify.toml`
-4. Установите переменные окружения в панели Netlify:
-   - `REACT_APP_SUPABASE_URL`
-   - `REACT_APP_SUPABASE_ANON_KEY`
-   - `CI=false`
-
-**Ручное развертывание:**
-1. Выполните `npm run build`
-2. Перетащите папку `build` в Netlify
-
-### Вариант 2: Vercel
-
-1. Установите Vercel CLI: `npm i -g vercel`
-2. Выполните `vercel` в директории проекта
-3. Следуйте инструкциям для развертывания
-4. Установите переменные окружения в панели Vercel
-
-### Вариант 3: Традиционный веб-хостинг
-
-1. Выполните `npm run build`
-2. Загрузите содержимое папки `build` на ваш веб-сервер
-3. Настройте ваш сервер для обслуживания `index.html` для всех маршрутов (SPA-маршрутизация)
-
-### Вариант 4: Docker
-
-Создайте `Dockerfile`:
-```dockerfile
-FROM node:18-alpine as build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+### Frontend Web (React)
+```bash
+cd src
+npm install
+npm run dev
 ```
 
-## 🔧 Конфигурация
+### Mobile App (React Native with Expo)
+```bash
+cd mobile-app
+npm install
+npm start
+# Scanner le QR code avec Expo Go sur votre téléphone
+```
 
-### Переменные окружения
+## 🎯 Features
 
-| Переменная | Описание | Обязательно |
-|------------|----------|-----------|
-| `REACT_APP_SUPABASE_URL` | URL вашего проекта Supabase | Да |
-| `REACT_APP_SUPABASE_ANON_KEY` | Анонимный ключ Supabase | Да |
-| `CI` | Установите в `false` для отключения предупреждений CI | Нет |
+- **Sports Betting**: Comprehensive betting platform with live odds
+- **AI Predictions**: Machine learning-powered betting predictions
+- **Multi-platform**: Web, mobile, and responsive design
+- **Real-time Updates**: Live match scores and odds updates
+- **User Management**: Registration, authentication, and profile management
+- **Payment Integration**: Deposit and withdrawal systems
+- **Analytics**: Advanced betting analytics and statistics
 
-### Настройка Supabase
+## 🏗️ Technology Stack
 
-1. Создайте проект Supabase на [supabase.com](https://supabase.com)
-2. Получите URL проекта и анонимный ключ из настроек проекта
-3. Настройте таблицы базы данных и аутентификацию по необходимости
+### Frontend
+- React 19 with TypeScript
+- Tailwind CSS for styling
+- Framer Motion for animations
+- React Router for navigation
 
-## 📱 Возможности
+### Backend
+- Node.js with Express
+- PostgreSQL database
+- Supabase for authentication and storage
+- JWT for secure authentication
 
-- **Адаптивный дизайн**: Работает на десктопе, планшете и мобильных устройствах
-- **Многоязычная поддержка**: Английский, русский, турецкий
-- **Обновления в реальном времени**: Живые ставки и уведомления
-- **Безопасная аутентификация**: На базе Supabase
-- **Современный UI**: Создан с помощью Tailwind CSS и Framer Motion
+### Mobile
+- React Native with Expo
+- TypeScript
+- Native navigation and components
 
-## 🛠️ Технологический стек
+### Database
+- PostgreSQL with UUID extensions
+- Partitioned tables for performance
+- Advanced indexing and optimization
+- Comprehensive schema with 144+ tables
 
-- **Frontend**: React 19, TypeScript
-- **Стилизация**: Tailwind CSS 4
-- **Backend**: Supabase
-- **Маршрутизация**: React Router DOM
-- **Формы**: React Hook Form с валидацией Zod
-- **Анимации**: Framer Motion
-- **Иконки**: Heroicons, React Icons
+## 📊 Database Schema
 
-## 📋 Доступные скрипты
+The platform includes a sophisticated database schema with:
 
-- `npm start` - Запуск сервера разработки
-- `npm run build` - Сборка для продакшена
-- `npm test` - Запуск тестов
-- `npm run eject` - Извлечение из Create React App (не рекомендуется)
+- **Users**: User management and authentication
+- **Matches**: Sports match data with partitioning
+- **Bets**: Betting system with risk analysis
+- **Transactions**: Financial transactions and payments
+- **Analytics**: AI-powered betting predictions
+- **Live Betting**: Real-time betting features
+- **Security**: Fraud detection and responsible gaming
 
-## 🔍 Устранение неполадок
+## 🔐 Security Features
 
-### Распространенные проблемы
+- JWT authentication
+- Input validation and sanitization
+- Rate limiting
+- Fraud detection systems
+- Responsible gaming limits
+- Data encryption
 
-1. **Сборка завершается с предупреждениями CI**
-   - Установите `CI=false` в переменных окружения
+## 🚀 Deployment
 
-2. **Ошибки подключения к Supabase**
-   - Проверьте правильность URL и ключа Supabase
-   - Убедитесь, что ваш проект Supabase активен
+The application is deployed on Vercel with:
 
-3. **Проблемы с маршрутизацией в продакшене**
-   - Убедитесь, что ваш хостинг-провайдер обслуживает `index.html` для всех маршрутов
-   - Проверьте конфигурацию редиректов в `netlify.toml`
+- Automatic deployments from main branch
+- Preview deployments for pull requests
+- Production environment with custom domain
+- CDN for static assets
+- SSL certificates
 
-4. **Проблемы с версией Node.js**
-   - Используйте Node.js версии 18 или выше
-   - Рассмотрите использование nvm для управления версиями Node.js
+## 📱 Mobile App
 
-### Оптимизация производительности
+The React Native mobile app provides:
 
-- Включите gzip-сжатие на вашем сервере
-- Используйте CDN для статических ресурсов
-- Настройте правильные заголовки кэширования
-- Отслеживайте Core Web Vitals
+- Native mobile experience
+- Push notifications
+- Offline functionality
+- Camera integration for document verification
+- Biometric authentication
 
-## 📞 Поддержка
+## 🤖 AI Features
 
-Для технической поддержки или вопросов о развертывании:
+- Machine learning betting predictions
+- Risk assessment algorithms
+- Pattern recognition for betting strategies
+- Real-time odds analysis
+- User behavior analytics
 
-1. Проверьте раздел устранения неполадок выше
-2. Просмотрите консоль на наличие сообщений об ошибках
-3. Убедитесь, что все переменные окружения правильно установлены
-4. Проверьте конфигурацию Supabase
+## 📈 Analytics & Monitoring
 
-## 📄 Лицензия
+- Real-time dashboard
+- User activity tracking
+- Betting pattern analysis
+- Revenue reporting
+- Performance metrics
 
-Этот проект является частным и собственническим. Все права защищены.
+## 🧪 Testing
+
+- Unit tests with Jest
+- Integration tests
+- E2E tests with Playwright
+- Mobile testing with Detox
+
+## 📝 License
+
+This project is proprietary and confidential.
 
 ---
 
-**Последнее обновление**: Январь 2025
-
-> **Примечание**: Это руководство предполагает, что у вас есть базовые знания о React-приложениях и веб-хостинге. Для расширенных конфигураций или пользовательских развертываний обратитесь к документации вашего хостинг-провайдера.
+**Last Updated**: March 2026
