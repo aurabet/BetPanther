@@ -15,8 +15,8 @@ services:
     env: node
     plan: free
     runtime: node
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     healthCheckPath: /api/health
     envVars:
       - key: PORT
