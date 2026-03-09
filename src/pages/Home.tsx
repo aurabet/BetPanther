@@ -5,6 +5,17 @@ import MatchCard from '../components/MatchCard';
 import DailyThemeBanner from '../components/DailyThemeBanner';
 import DailyMatchCard from '../components/DailyMatchCard';
 
+// Composant de secours pour éviter les erreurs
+const SafeDailyThemeBanner = (props: any) => {
+  try {
+    return <DailyThemeBanner {...props} />;
+  } catch (error) {
+    return <div className="bg-blue-600 text-white p-4 mb-4 rounded">
+      Thème du jour: Football Africain
+    </div>;
+  }
+};
+
 interface Match {
   id: number;
   home_team: string;

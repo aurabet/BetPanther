@@ -12,15 +12,22 @@ export default function Header() {
   }, []);
 
   const getUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-    if (user) {
-      const { data } = await supabase
-        .from('profiles')
-        .select('balance')
-        .eq('id', user.id)
-        .single();
-      setBalance(data?.balance || 0);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('balance')
+          .eq('id', user.id)
+          .single();
+        setBalance(data?.balance || 0);
+      }
+    } catch (error) {
+      console.log('Supabase non configuré, mode démo activé');
+      // Mode démo pour le développement local
+      setUser({ id: 'demo', email: 'demo@example.com' });
+      setBalance(1000);
     }
   };
 

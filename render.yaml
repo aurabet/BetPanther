@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: bookmaker-africa-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -l 3000
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 3000
+    region: oregon
+
+  - type: web
+    name: bookmaker-africa-backend
+    env: node
+    plan: free
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+    region: oregon
+
+databases:
+  - name: bookmaker-africa-db
+    type: postgresql
+    plan: free
+    region: oregon

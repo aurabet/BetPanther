@@ -1,149 +1,137 @@
-# Sports Betting Platform
+# BookMaker Africa
 
-A comprehensive sports betting platform with React frontend, Node.js backend, and React Native mobile app.
+A full-stack sports betting application built with React (Vite) and Node.js (Express).
 
-## 🚀 Live Demo
-
-**Web Application**: https://bookmaker-africa-4bfd93kue-aurabet-6057s-projects.vercel.app
-
-## 📦 Project Structure
+## Project Structure
 
 ```
 bookmaker-africa/
-├── backend/           # Node.js API server
-├── src/              # Web frontend (React)
-├── mobile-app/       # React Native mobile app
-├── database/         # Database schema and migrations
-└── README.md         # This file
+├── frontend/          # React application (Vite)
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── index.html
+│   └── src/
+│       ├── App.tsx
+│       ├── index.tsx
+│       ├── index.css
+│       ├── App.css
+│       ├── components/
+│       │   └── Header.tsx
+│       └── pages/
+│           ├── Home.tsx
+│           ├── Dashboard.tsx
+│           └── Live.tsx
+├── backend/           # Node.js API (Express)
+│   ├── package.json
+│   ├── server.js
+│   └── routes/
+│       ├── auth.js
+│       ├── users.js
+│       ├── matches.js
+│       └── bets.js
+├── package.json       # Root package.json
+├── render.yaml        # Deployment configuration
+└── README.md
 ```
 
-## 🛠️ Local Development
+## Features
 
-### Backend (Node.js API)
+### Frontend (React)
+- Modern React application built with Vite
+- TypeScript support
+- React Router for navigation
+- Tailwind CSS for styling
+- Responsive design
+- Pages:
+  - Home: Landing page with quick stats and match overview
+  - Dashboard: User account management and betting history
+  - Live: Real-time betting interface
+
+### Backend (Node.js)
+- Express.js REST API
+- JWT authentication
+- User registration and login
+- Match management
+- Betting system
+- Security middleware (Helmet, CORS)
+- Input validation with Joi
+
+## Installation
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Backend
 ```bash
 cd backend
 npm install
 npm run dev
 ```
 
-### Frontend Web (React)
-```bash
-cd src
-npm install
-npm run dev
-```
+## API Endpoints
 
-### Mobile App (React Native with Expo)
-```bash
-cd mobile-app
-npm install
-npm start
-# Scanner le QR code avec Expo Go sur votre téléphone
-```
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
 
-## 🎯 Features
+### Users
+- `GET /api/users/profile` - Get user profile
+- `POST /api/users/update-balance` - Update user balance
 
-- **Sports Betting**: Comprehensive betting platform with live odds
-- **AI Predictions**: Machine learning-powered betting predictions
-- **Multi-platform**: Web, mobile, and responsive design
-- **Real-time Updates**: Live match scores and odds updates
-- **User Management**: Registration, authentication, and profile management
-- **Payment Integration**: Deposit and withdrawal systems
-- **Analytics**: Advanced betting analytics and statistics
+### Matches
+- `GET /api/matches` - Get all matches
+- `GET /api/matches/live` - Get live matches
+- `GET /api/matches/upcoming` - Get upcoming matches
+- `GET /api/matches/:id` - Get match by ID
 
-## 🏗️ Technology Stack
+### Bets
+- `POST /api/bets/place` - Place a bet
+- `GET /api/bets/user` - Get user bets
+- `GET /api/bets/:id` - Get bet by ID
 
-### Frontend
-- React 19 with TypeScript
-- Tailwind CSS for styling
-- Framer Motion for animations
-- React Router for navigation
+## Environment Variables
 
 ### Backend
-- Node.js with Express
-- PostgreSQL database
-- Supabase for authentication and storage
-- JWT for secure authentication
+Create a `.env` file in the backend directory:
+```
+PORT=5000
+NODE_ENV=development
+JWT_SECRET=your-secret-key
+```
 
-### Mobile
-- React Native with Expo
+## Deployment
+
+This project includes a `render.yaml` file for easy deployment to Render.com:
+
+1. Push your code to a GitHub repository
+2. Connect the repository to Render.com
+3. Render will automatically deploy both frontend and backend services
+4. The deployment includes a PostgreSQL database
+
+## Technologies Used
+
+### Frontend
+- React 18
 - TypeScript
-- Native navigation and components
+- Vite
+- React Router
+- Tailwind CSS
+- React Hot Toast
 
-### Database
-- PostgreSQL with UUID extensions
-- Partitioned tables for performance
-- Advanced indexing and optimization
-- Comprehensive schema with 144+ tables
+### Backend
+- Node.js
+- Express.js
+- JWT
+- bcryptjs
+- Joi
+- Helmet
+- CORS
 
-## 📊 Database Schema
+## License
 
-The platform includes a sophisticated database schema with:
-
-- **Users**: User management and authentication
-- **Matches**: Sports match data with partitioning
-- **Bets**: Betting system with risk analysis
-- **Transactions**: Financial transactions and payments
-- **Analytics**: AI-powered betting predictions
-- **Live Betting**: Real-time betting features
-- **Security**: Fraud detection and responsible gaming
-
-## 🔐 Security Features
-
-- JWT authentication
-- Input validation and sanitization
-- Rate limiting
-- Fraud detection systems
-- Responsible gaming limits
-- Data encryption
-
-## 🚀 Deployment
-
-The application is deployed on Vercel with:
-
-- Automatic deployments from main branch
-- Preview deployments for pull requests
-- Production environment with custom domain
-- CDN for static assets
-- SSL certificates
-
-## 📱 Mobile App
-
-The React Native mobile app provides:
-
-- Native mobile experience
-- Push notifications
-- Offline functionality
-- Camera integration for document verification
-- Biometric authentication
-
-## 🤖 AI Features
-
-- Machine learning betting predictions
-- Risk assessment algorithms
-- Pattern recognition for betting strategies
-- Real-time odds analysis
-- User behavior analytics
-
-## 📈 Analytics & Monitoring
-
-- Real-time dashboard
-- User activity tracking
-- Betting pattern analysis
-- Revenue reporting
-- Performance metrics
-
-## 🧪 Testing
-
-- Unit tests with Jest
-- Integration tests
-- E2E tests with Playwright
-- Mobile testing with Detox
-
-## 📝 License
-
-This project is proprietary and confidential.
-
----
-
-**Last Updated**: March 2026
+MIT License
