@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npx vite build",
     "preview": "vite preview",
-    "start": "cd backend && npm install && npm start",
+    "start": "cd backend && npm install && node server.js",
     "start:backend": "cd backend && npm start"
   },
   "dependencies": {
