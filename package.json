@@ -8,6 +8,7 @@
     "build": "npx vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --max-warnings 0",
+    "start": "cd backend && npm start",
     "start:backend": "cd backend && npm start"
   },
   "dependencies": {
